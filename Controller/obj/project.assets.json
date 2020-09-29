@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {}
+    ".NETCoreApp,Version=v3.1": {
+      "Model/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Model.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Model/1.0.0": {
+      "type": "project",
+      "path": "../RaceSimulatorConsoleApp/Model.csproj",
+      "msbuildProject": "../RaceSimulatorConsoleApp/Model.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.1": []
+    ".NETCoreApp,Version=v3.1": [
+      "Model >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\paulr\\.nuget\\packages\\": {},
@@ -37,7 +56,11 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj": {
+              "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -1229,6 +1229,9 @@
       "Controller/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
+        "dependencies": {
+          "Model": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Controller.dll": {}
         },
@@ -4684,9 +4687,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\ControllerTest\\ControllerTest.csproj",
-      "projectName": "ControllerTest",
-      "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\ControllerTest\\ControllerTest.csproj",
+      "projectUniqueName": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\ControllerTest\\Tests.csproj",
+      "projectName": "Tests",
+      "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\ControllerTest\\Tests.csproj",
       "packagesPath": "C:\\Users\\paulr\\.nuget\\packages\\",
       "outputPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\ControllerTest\\obj\\",
       "projectStyle": "PackageReference",

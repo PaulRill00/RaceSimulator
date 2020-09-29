@@ -114,7 +114,11 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj": {
+                "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
