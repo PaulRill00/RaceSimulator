@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace Tests
 {
+    [TestFixture]
     class Controller_Race_ParticipantStandings
     {
         private Race _race;
@@ -34,6 +35,21 @@ namespace Tests
             List<IParticipant> list = _race.GetOrderedParticipants();
 
             Assert.AreEqual(first.Name, list.ElementAt(0).Name);
+        }
+
+        [TestCase(0, ExpectedResult = 25)]
+        [TestCase(1, ExpectedResult = 20)]
+        [TestCase(2, ExpectedResult = 15)]
+        [TestCase(3, ExpectedResult = 13)]
+        [TestCase(4, ExpectedResult = 11)]
+        public int CalculateEndPoints(int participantID)
+        {
+            _race.Participants.Reverse();
+            _race.Finished = _race.Participants;
+
+            var result = _race.CalculateEndPoints();
+
+            return result.ElementAt(participantID).Points;
         }
     }
 }

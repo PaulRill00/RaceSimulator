@@ -7,8 +7,8 @@ namespace Controller
 {
     public static class Data
     {
-        public static int SectionLength { get; private set; } = 100;
-        public static int RoundsToWin { get; private set; } = 2;
+        public static int SectionLength { get; } = 100;
+        public static int RoundsToWin { get; } = 2;
 
         public static Competition Competition { get; set; }
         public static Race CurrentRace { get; set; }
@@ -48,7 +48,7 @@ namespace Controller
             {
                 CurrentRace = null;
                 CurrentRace = new Race(track, Competition.Participants);
-                NextTrack?.Invoke(null, new EventArgs());
+                NextTrack?.Invoke(null, new EventArgs() );
 
                 CurrentRace.Start();
             }

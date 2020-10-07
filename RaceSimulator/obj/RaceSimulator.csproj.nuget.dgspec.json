@@ -169,9 +169,6 @@
             "projectReferences": {
               "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\Controller\\Controller.csproj": {
                 "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\Controller\\Controller.csproj"
-              },
-              "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj": {
-                "projectPath": "D:\\Users\\paulr\\Documents\\Software\\School\\CS\\RaceSimulator\\RaceSimulatorConsoleApp\\Model.csproj"
               }
             }
           }

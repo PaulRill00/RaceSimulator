@@ -9,16 +9,16 @@ namespace Controller
 {
     public class Race
     {
+        private const int smoother = 3;
         public Track Track { get; set; }
         public List<IParticipant> Participants { get; set; }
         public DateTime StartTime { get; set; }
-        public bool Running { get; private set; } = false;
+        public bool Running { get; private set; }
+        public List<IParticipant> Finished { get; set; } = new List<IParticipant>();
 
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
-        private Driver _winner;
-        private List<IParticipant> _finished = new List<IParticipant>();
 
         public event EventHandler<DriversChangedEventArgs> DriversChanges;
         public event EventHandler<GameWonEventArgs> GameWon;
@@ -30,8 +30,7 @@ namespace Controller
             foreach(IParticipant participant in participants)
             {
                 Driver driver = (Driver)participant;
-                driver.CurrentRound = 0;
-                driver.DistanceTraveled = 0;
+                driver.Reset();
                 Participants.Add(driver);
             }
 
@@ -41,7 +40,7 @@ namespace Controller
             RandomizeEquipment();
             PlaceParticipants();
 
-            _timer = new Timer(500);
+            _timer = new Timer(500 / smoother);
             _timer.Elapsed += OnTimedEvent;
         }
 
@@ -131,25 +130,30 @@ namespace Controller
         }
 
         public void OnTimedEvent(object sender, EventArgs args)
-        {
-            
-
+        { 
             foreach(IParticipant participant in GetOrderedParticipants())
             {
                 if (_random.Next(0, 100) >= 90)
                 {
                     participant.Equipment.IsBroken = !participant.Equipment.IsBroken;
-                    if(participant.Equipment.IsBroken)
+                    if (participant.Equipment.IsBroken)
+                    {
+                        Data.Competition.BrokenTimes.AddToList(new DriverBroken() { Name = participant.Name });
                         participant.Equipment.Performance = _random.Next(5, 9) + 1;
+                        participant.Equipment.Speed = CalculateSpeed(participant.Equipment.Performance, participant.Equipment.Quality);
+                    }
                 }
 
 
                 if (!participant.Equipment.IsBroken)
+                {
+                    Data.Competition.TopSpeeds.AddToList(new DriverTopSpeed() { Name = participant.Name, Speed = participant.Equipment.Speed });
                     AddDistanceToParticipant(participant, participant.Equipment.Speed);
+                }
 
             }
 
-            DriversChanges?.Invoke(this, new DriversChangedEventArgs() { Track = Track });
+            DriversChanges?.Invoke(this, new DriversChangedEventArgs() { Track = Track, Points = Data.Competition.Points});
         }
 
         public List<IParticipant> GetOrderedParticipants()
@@ -161,6 +165,7 @@ namespace Controller
 
         public void AddDistanceToParticipant(IParticipant participant, int distance)
         {
+            distance = distance / smoother; // smooth out movement
             SectionData data = GetSectionDataForParticipant(participant);
             if (data != null)
             {
@@ -223,6 +228,8 @@ namespace Controller
 
                 if (!isDone)
                 {
+                    Section section = GetSection(data);
+                    Data.Competition.SectionTimes.AddToList(new DriverTime() { Name = participant.Name, Section = section, Time = new TimeSpan() });
 
                     if (nextData.Left == null)
                     {
@@ -246,7 +253,7 @@ namespace Controller
 
             if (driver.CurrentRound - 1 == Data.RoundsToWin)
             {
-                _finished.Add(driver);
+                Finished.Add(driver);
                 Participants.Remove(driver);
 
                 if (Participants.Count == 0)
@@ -255,7 +262,7 @@ namespace Controller
                     Data.Competition.SetPoints(CalculateEndPoints());
 
                     Data.NextRace();
-                    GameWon?.Invoke(this, new GameWonEventArgs() { Winner = _winner, Track = Track });
+                    GameWon?.Invoke(this, new GameWonEventArgs() { Track = Track });
                 }
                 return true;
             }
@@ -283,18 +290,13 @@ namespace Controller
         {
             List<DriverPoints> points = new List<DriverPoints>();
 
-            for(int i = 0; i < _finished.Count; i++)
+            for(int i = 0; i < Finished.Count; i++)
             {
-                IParticipant participant = _finished.ElementAt(i);
+                IParticipant participant = Finished.ElementAt(i);
                 DriverPoints _points = new DriverPoints() { Name = participant.Name, Points = GetPointForPosition(i + 1) };
                 points.Add(_points);
             }
             return points;
-        }
-
-        public List<IParticipant> GetStandings()
-        {
-            return _finished;
         }
 
         public SectionData GetNextData(SectionData prev)
@@ -324,6 +326,94 @@ namespace Controller
         {
 
             return (int)performance * quality;
+        }
+
+        public void CalculateCoords()
+        {
+            int[] direction = { 1, 0 };
+            int[] prevCoords = { 0, 0 };
+
+            foreach (Section section in Track.Sections)
+            {
+                section.Direction = direction;
+
+                section.X = prevCoords[0] + direction[0];
+                section.Y = prevCoords[1] + direction[1];
+
+                direction = GetDirection(direction, section.SectionType);
+
+                prevCoords = new int[] { section.X, section.Y };
+            }
+        }
+
+        public void ApplyOffset()
+        {
+            int[] offset = GetOffset();
+            foreach (Section section in Track.Sections)
+            {
+                section.X += offset[0];
+                section.Y += offset[1];
+            }
+        }
+
+        public int[] GetOffset()
+        {
+            int minX = 0;
+            int minY = 0;
+
+            foreach (Section section in Track.Sections)
+            {
+                minX = section.X < minX ? section.X : minX;
+                minY = section.Y < minY ? section.Y : minY;
+            }
+
+            minX = Math.Abs(minX);
+            minY = Math.Abs(minY);
+
+            return new int[] { minX, minY };
+        }
+
+        public int[] GetDirection(int[] direction, SectionTypes type)
+        {
+            switch (type)
+            {
+                case SectionTypes.Finish:
+                    {
+                        return direction;
+                    }
+                case SectionTypes.LeftCorner:
+                    {
+                        if (direction[0] != 0)
+                        {
+                            return new int[] { 0, (direction[0] > 0 ? -1 : 1) };
+                        }
+                        else
+                        {
+                            return new int[] { (direction[1] > 0 ? 1 : -1), 0 };
+                        }
+                    }
+                case SectionTypes.RightCorner:
+                    {
+                        if (direction[0] != 0)
+                        {
+                            return new int[] { 0, (direction[0] > 0 ? 1 : -1) };
+                        }
+                        else
+                        {
+                            return new int[] { (direction[1] > 0 ? -1 : 1), 0 };
+                        }
+                    }
+                case SectionTypes.StartGrid:
+                    {
+                        return direction;
+                    }
+                case SectionTypes.Straight:
+                    {
+                        return direction;
+                    }
+            }
+
+            return new int[] { 1, 0 };
         }
     }
 }

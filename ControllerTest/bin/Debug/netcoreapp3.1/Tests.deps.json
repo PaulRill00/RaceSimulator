@@ -881,8 +881,7 @@
       },
       "RaceSimulator/1.0.0": {
         "dependencies": {
-          "Controller": "1.0.0",
-          "Model": "1.0.0"
+          "Controller": "1.0.0"
         },
         "runtime": {
           "RaceSimulator.dll": {}

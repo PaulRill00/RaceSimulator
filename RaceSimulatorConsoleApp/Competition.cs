@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Model
 {
@@ -9,30 +7,24 @@ namespace Model
         public List<IParticipant> Participants { get; set; } = new List<IParticipant>();
         public Queue<Track> Tracks { get; set; } = new Queue<Track>();
         public RaceInfo<DriverPoints> Points { get; set; } = new RaceInfo<DriverPoints>();
+        public RaceInfo<DriverTime> SectionTimes { get; set; } = new RaceInfo<DriverTime>();
+        public RaceInfo<DriverBroken> BrokenTimes { get; set; } = new RaceInfo<DriverBroken>();
+        public RaceInfo<DriverTopSpeed> TopSpeeds { get; set; } = new RaceInfo<DriverTopSpeed>();
 
         public Track NextTrack()
+
         {
             if (Tracks.TryDequeue(out Track track))
                 return track;
-            else
-                return null;
+            return null;
         }
 
         public void SetPoints(List<DriverPoints> points)
         {
             foreach(DriverPoints point in points)
             {
-                DriverPoints _current = GetPoints(point.Name);
-                if (_current != null)
-                    _current.Points = point.Points;
-                else
-                    Points.AddToList(point);
+                Points.AddToList(point);                    
             }
-        }
-
-        public DriverPoints GetPoints(string name)
-        {
-            return Points.GetList().Find(x => x.Name == name);
         }
     }
 }

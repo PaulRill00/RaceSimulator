@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\cars\car_blue.png" />
+    <None Remove="images\cars\car_green.png" />
+    <None Remove="images\cars\car_grey.png" />
+    <None Remove="images\cars\car_red.png" />
+    <None Remove="images\cars\car_yellow.png" />
+    <None Remove="images\fire\fire_1.png" />
+    <None Remove="images\fire\fire_2.png" />
+    <None Remove="images\fire\fire_3.png" />
+    <None Remove="images\fire\fire_4.png" />
+    <None Remove="images\fire\fire_5.png" />
+    <None Remove="images\track_tiles\track_corner.png" />
+    <None Remove="images\track_tiles\track_finish.png" />
+    <None Remove="images\track_tiles\track_startgrid.png" />
+    <None Remove="images\track_tiles\track_straight.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="images\cars\car_blue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\cars\car_green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\cars\car_grey.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\cars\car_red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\cars\car_yellow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fire\fire_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fire\fire_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fire\fire_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fire\fire_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fire\fire_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\track_tiles\track_corner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\track_tiles\track_finish.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\track_tiles\track_startgrid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\track_tiles\track_straight.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj" />
+  </ItemGroup>
+
+</Project>

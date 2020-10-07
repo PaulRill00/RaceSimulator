@@ -6,4 +6,3 @@ D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\RaceSimulatorConsoleAp
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\RaceSimulatorConsoleApp\obj\Debug\netcoreapp3.1\Model.csproj.CoreCompileInputs.cache
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\RaceSimulatorConsoleApp\obj\Debug\netcoreapp3.1\Model.dll
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\RaceSimulatorConsoleApp\obj\Debug\netcoreapp3.1\Model.pdb
-D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\RaceSimulatorConsoleApp\obj\Debug\netcoreapp3.1\Model.csprojAssemblyReference.cache

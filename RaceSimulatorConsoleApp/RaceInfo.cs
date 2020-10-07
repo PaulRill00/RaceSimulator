@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Model
 {
-    public class RaceInfo<T>
+    public class RaceInfo<T> where T : IData<T>
     {
         private List<T> _list = new List<T>();
 
         public void AddToList(T t1)
         {
-            _list.Add(t1);
+            t1.Add(_list);
         }
 
         public List<T> GetList()

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Controller;
 using Model;
 using NUnit.Framework;
 using RaceSimulator;
 
 namespace Tests
 {
+    [TestFixture]
     public class View_TrackVisuals_TrackCalculating
     {
         private Competition Competition { get; set; }
@@ -26,12 +28,14 @@ namespace Tests
 
             Track = new Track("testTrack", new SectionTypes[] { SectionTypes.StartGrid, SectionTypes.RightCorner, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.Straight, SectionTypes.RightCorner, SectionTypes.RightCorner, SectionTypes.LeftCorner });
             Competition.Tracks.Enqueue(Track);
+            Data.Competition = Competition;
+            Data.NextRace();
         }
 
         [Test]
         public void CalculateCoords()
         {
-            TrackVisuals.Instance.CalculateCoords(Track.Sections);
+            Data.CurrentRace.CalculateCoords();
 
             Assert.IsNotNull(Track.Sections.First.Value.X);
         }
@@ -39,7 +43,7 @@ namespace Tests
         [Test]
         public void GetOffset_NegativeXAndY()
         {
-            TrackVisuals.Instance.CalculateCoords(Track.Sections);
+            Data.CurrentRace.CalculateCoords();
 
             int[] offset = TrackVisuals.Instance.GetOffset(Track.Sections);
 
@@ -53,7 +57,7 @@ namespace Tests
         [TestCase(null, new int[] { 1, 0 }, ExpectedResult = new int[] { 1, 0 })]
         public int[] GetDirection(SectionTypes sectionTypes, int[] direction)
         { 
-            return TrackVisuals.Instance.GetDirection(direction, sectionTypes);
+            return Data.CurrentRace.GetDirection(direction, sectionTypes);
         }
 
         [Test]

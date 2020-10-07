@@ -56,7 +56,8 @@ namespace RaceSimulator
         {
             Console.Clear();
             Console.SetCursorPosition(0, 0);
-            CalculateCoords(track.Sections);
+            Data.CurrentRace.CalculateCoords();
+            Data.CurrentRace.ApplyOffset();
             Console.Write(track.Name);
             Console.CursorVisible = false;
             trackLoaded = true;
@@ -86,7 +87,37 @@ namespace RaceSimulator
             }
 
             Console.SetCursorPosition(0, 1);
+        }
+        public int[] GetOffset(LinkedList<Section> sections)
+        {
+            int minX = 0;
+            int minY = 0;
 
+            foreach (Section section in sections)
+            {
+                minX = section.X < minX ? section.X : minX;
+                minY = section.Y < minY ? section.Y : minY;
+            }
+
+            minX = Math.Abs(minX);
+            minY = Math.Abs(minY);
+
+            return new int[] { minX * visualWidth, minY * visualHeight };
+        }
+
+        public void DrawScoreboard(RaceInfo<DriverPoints> data)
+        {
+            int x = 60;
+            int y = 0;
+            Console.SetCursorPosition(x, y);
+            Console.Write("Points scoreboard:");
+
+            foreach (DriverPoints points in data.GetList())
+            {
+                y++;
+                Console.SetCursorPosition(x,y);
+                Console.Write($"{points.Name,-10}: {points.Points,-3}");
+            }
         }
 
         public void PrintSectionWithParticipants(string section, SectionData data)
@@ -131,23 +162,6 @@ namespace RaceSimulator
                 }
             }
             return ConsoleColor.White;
-        }
-
-        public int[] GetOffset(LinkedList<Section> sections)
-        {
-            int minX = 0;
-            int minY = 0;
-
-            foreach(Section section in sections)
-            {
-                minX = section.X < minX ? section.X : minX;
-                minY = section.Y < minY ? section.Y : minY;
-            }
-
-            minX = Math.Abs(minX);
-            minY = Math.Abs(minY);
-
-            return new int[] { minX * visualWidth, minY * visualHeight };
         }
 
         public string[] GetSectionVisual(int[] direction, SectionTypes type)
@@ -233,79 +247,20 @@ namespace RaceSimulator
 
             return result;
         }
-
-        public void CalculateCoords(LinkedList<Section> sections) 
-        {
-            int[] direction = { 1, 0 };
-            int[] prevCoords = { 0, 0 };
-
-            foreach(Section section in sections)
-            {
-                section.Direction = direction;
-
-                section.X = prevCoords[0] + direction[0];
-                section.Y = prevCoords[1] + direction[1];
-
-                direction = GetDirection(direction, section.SectionType);
-
-                prevCoords = new int[] { section.X, section.Y };
-            }
-        }
-
-        public int[] GetDirection(int[] direction, SectionTypes type)
-        {
-            switch (type)
-            {
-                case SectionTypes.Finish:
-                    {
-                        return direction;
-                    }
-                case SectionTypes.LeftCorner:
-                    {
-                        if (direction[0] != 0)
-                        {
-                            return new int[] { 0, (direction[0] > 0 ? -1 : 1) };
-                        }
-                        else
-                        {
-                            return new int[] { (direction[1] > 0 ? 1 : -1), 0 };
-                        }
-                    }
-                case SectionTypes.RightCorner:
-                    {
-                        if (direction[0] != 0)
-                        {
-                            return new int[] { 0, (direction[0] > 0 ? 1 : -1) };
-                        }
-                        else
-                        {
-                            return new int[] { (direction[1] > 0 ? -1 : 1), 0 };
-                        }
-                    }
-                case SectionTypes.StartGrid:
-                    {
-                        return direction;
-                    }
-                case SectionTypes.Straight:
-                    {
-                        return direction;
-                    }
-            }
-
-            return new int[] { 1, 0 };
-        }
+        
 
         public void OnDriverChanged(object sender, DriversChangedEventArgs args)
         {
-            if(Data.CurrentRace.Running)
+            if (Data.CurrentRace.Running)
+            {
+                DrawScoreboard(args.Points);
                 DrawTrack(args.Track);
+            }
         }
 
         public void OnGameWon(object sender, GameWonEventArgs args)
         {
-            //Console.WriteLine($"{args.Winner.Name} won the race on track {args.Track.Name}");
             Console.Clear();
-            //new TrackVisuals();
         }
 
         public void OnNextTrack(object sender, EventArgs args)
