@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Controller;
 using Model;
 using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
@@ -24,14 +11,16 @@ namespace Visuals
     /// </summary>
     public partial class MainWindow : Window
     {
+        public CompetitionStats CompetitionStats { get; set; }
+        public RaceStats RaceStats { get; set; }
 
-        private bool trackLoaded;
         public MainWindow()
         {
             InitializeComponent();
             Data.NextTrack += OnNextTrack;
             Data.Initialize();
             Data.NextRace();
+            Title = "Racebaan Simulator";
         }
 
         public void OnDriverChanged(object sender, DriversChangedEventArgs args)
@@ -44,20 +33,50 @@ namespace Visuals
                     TrackImage.Source = Visualize.DrawTrack(args.Track);
                 })
             );
+
+            Visuals.DataContext.Instance.OnDriversChanged();
         }
 
         public void OnNextTrack(object sender, EventArgs args)
         {
             ImageLoader.ClearCache();
-            trackLoaded = false;
-            if (Data.CurrentRace != null)
+            Visuals.DataContext.Instance.OnDriversChanged();
+            
+            if (Data.CurrentRace == null) return;
+
+            Data.CurrentRace.DriversChanges += OnDriverChanged;
+            Data.CurrentRace.CalculateCoords();
+            Data.CurrentRace.ApplyOffset();
+        }
+
+        private void OnCompetitionStatsOpen(object sender, RoutedEventArgs e)
+        {
+            if (CompetitionStats == null)
             {
-                Data.CurrentRace.DriversChanges += OnDriverChanged;
-                //Data.CurrentRace.GameWon += OnGameWon;
-                Data.CurrentRace.CalculateCoords();
-                Data.CurrentRace.ApplyOffset();
-                trackLoaded = true;
+                CompetitionStats = new CompetitionStats();
+                CompetitionStats.Closed += (o, args) => CompetitionStats = null;
+                CompetitionStats.Show();
             }
+
+            CompetitionStats.Focus();
+        }
+
+        private void OnRaceStatsOpen(object sender, RoutedEventArgs e)
+        {
+            if (RaceStats == null)
+            {
+                RaceStats = new RaceStats();
+                RaceStats.Closed += (o, args) => RaceStats = null;
+                RaceStats.Show();
+            }
+
+            
+            RaceStats.Focus();
+        }
+
+        private void OnExit(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

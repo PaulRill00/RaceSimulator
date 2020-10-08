@@ -32,7 +32,7 @@ namespace Visuals
                 map = new Bitmap(width, height);
 
             Graphics g = Graphics.FromImage(map);
-            SolidBrush brush = new SolidBrush(Color.LawnGreen);
+            SolidBrush brush = new SolidBrush(Color.FromArgb(255,23,168,115));
             g.FillRectangle(brush, 0, 0, width, height);
 
             if (!_cache.ContainsKey("empty"))

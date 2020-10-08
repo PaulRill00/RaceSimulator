@@ -6,7 +6,7 @@
         private string _name;
         private int _fireCount;
         public string Name { 
-            get => Equipment.IsBroken ? "x" : _name;
+            get => Equipment.IsBroken ? $"{_name} (Broken)" : _name;
             set => _name = value;
         }
         public int Points { get; set; } = 0;

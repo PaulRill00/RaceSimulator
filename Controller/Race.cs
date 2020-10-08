@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Timers;
 using Model;
 
@@ -12,13 +11,12 @@ namespace Controller
         private const int smoother = 3;
         public Track Track { get; set; }
         public List<IParticipant> Participants { get; set; }
-        public DateTime StartTime { get; set; }
         public bool Running { get; private set; }
         public List<IParticipant> Finished { get; set; } = new List<IParticipant>();
+        public Timer Timer { get; set; }
 
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
-        private Timer _timer;
 
         public event EventHandler<DriversChangedEventArgs> DriversChanges;
         public event EventHandler<GameWonEventArgs> GameWon;
@@ -27,9 +25,8 @@ namespace Controller
         {
             Track = track;
             Participants = new List<IParticipant>();
-            foreach(IParticipant participant in participants)
+            foreach (var driver in participants.Cast<Driver>())
             {
-                Driver driver = (Driver)participant;
                 driver.Reset();
                 Participants.Add(driver);
             }
@@ -40,8 +37,8 @@ namespace Controller
             RandomizeEquipment();
             PlaceParticipants();
 
-            _timer = new Timer(500 / smoother);
-            _timer.Elapsed += OnTimedEvent;
+            Timer = new Timer(500 / smoother);
+            Timer.Elapsed += OnTimedEvent;
         }
 
         public SectionData GetSectionData(Section section)
@@ -54,15 +51,7 @@ namespace Controller
 
         public Section GetSection(SectionData data)
         {
-            if (_positions.ContainsValue(data))
-            {
-                foreach(KeyValuePair<Section, SectionData> pair in _positions)
-                {
-                    if (pair.Value == data)
-                        return pair.Key;
-                }
-            }
-            return null;
+            return _positions.ContainsValue(data) ? (from pair in _positions where pair.Value == data select pair.Key).FirstOrDefault() : null;
         }
 
         public void RandomizeEquipment()
@@ -71,20 +60,19 @@ namespace Controller
             {
                 participant.Equipment.Performance = _random.Next(5,9) + 1;
                 participant.Equipment.Quality = _random.Next(5,9) + 1;
-                participant.Equipment.Speed = CalculateSpeed(participant.Equipment.Performance, participant.Equipment.Quality);
             });
         }
 
         public void PlaceParticipants()
         {
-            List<Section> startSections = GetStartSections();
-            int maxParticipants = startSections.Count * 2;
+            var startSections = GetStartSections();
+            var maxParticipants = startSections.Count * 2;
             maxParticipants = maxParticipants > Participants.Count ? Participants.Count : maxParticipants;
 
-            for(int index = 0; index < maxParticipants; index++)
+            for(var index = 0; index < maxParticipants; index++)
             {
-                SectionData sectionData = GetSectionData(startSections[index / 2]);
-                ((Driver)Participants[index]).DistanceTraveled = 0 - (index / 2);
+                var sectionData = GetSectionData(startSections[index / 2]);
+                ((Driver) Participants[index]).DistanceTraveled = 0 - (index / 2);
                 if (index % 2 > 0)
                 {
                     sectionData.Left = Participants[index];
@@ -100,13 +88,9 @@ namespace Controller
         {
             List<Section> startSections = new List<Section>();
 
-            foreach(Section section in Track.Sections)
-            {
-                if (section.SectionType == SectionTypes.StartGrid)
-                    startSections.Add(section);
-            }
+            startSections.AddRange(Track.Sections.Where(section => section.SectionType == SectionTypes.StartGrid));
 
-            Section first = startSections[0];
+            var first = startSections[0];
             startSections.RemoveAt(0);
             startSections.Add(first);
 
@@ -117,13 +101,13 @@ namespace Controller
 
         public void Start()
         {
-            _timer.Start();
+            Timer.Start();
             Running = true;
         }
 
         public void Stop()
         {
-            _timer.Stop();
+            Timer.Stop();
             Running = false;
 
             DriversChanges = null;
@@ -131,23 +115,22 @@ namespace Controller
 
         public void OnTimedEvent(object sender, EventArgs args)
         { 
-            foreach(IParticipant participant in GetOrderedParticipants())
+            foreach(var participant in GetOrderedParticipants())
             {
-                if (_random.Next(0, 100) >= 90)
-                {
+                if ((_random.Next(0, 100) >= 95) || participant.Equipment.IsBroken && _random.Next(0,100) >= 88) {
                     participant.Equipment.IsBroken = !participant.Equipment.IsBroken;
                     if (participant.Equipment.IsBroken)
                     {
                         Data.Competition.BrokenTimes.AddToList(new DriverBroken() { Name = participant.Name });
                         participant.Equipment.Performance = _random.Next(5, 9) + 1;
-                        participant.Equipment.Speed = CalculateSpeed(participant.Equipment.Performance, participant.Equipment.Quality);
+                        participant.Equipment.Quality = _random.Next(5, 9) + 1;
                     }
                 }
 
 
                 if (!participant.Equipment.IsBroken)
                 {
-                    Data.Competition.TopSpeeds.AddToList(new DriverTopSpeed() { Name = participant.Name, Speed = participant.Equipment.Speed });
+                    Data.Competition.TopSpeeds.AddToList(new DriverTopSpeed() { Name = participant.Name, Speed = ((Car)participant.Equipment).Speed });
                     AddDistanceToParticipant(participant, participant.Equipment.Speed);
                 }
 
@@ -158,115 +141,113 @@ namespace Controller
 
         public List<IParticipant> GetOrderedParticipants()
         {
-            List<IParticipant> participants = Participants.OrderBy(s => ((Driver)s).DistanceTraveled).ToList();
+            var participants = Participants.OrderBy(s => ((Driver)s).DistanceTraveled).ToList();
             participants.Reverse();
             return participants;
         }
 
         public void AddDistanceToParticipant(IParticipant participant, int distance)
         {
-            distance = distance / smoother; // smooth out movement
-            SectionData data = GetSectionDataForParticipant(participant);
-            if (data != null)
+            distance /= smoother; // smooth out movement
+            var data = GetSectionDataForParticipant(participant);
+            if (data == null) return;
+
+            if (data.Left == participant)
             {
-                if (data.Left == participant)
+                var newValue = data.DistanceLeft + distance;
+                if (newValue >= Data.SectionLength)
                 {
-                    int newValue = data.DistanceLeft + distance;
-                    if (newValue >= Data.SectionLength)
-                    {
-                        MoveToNextSection(participant, data, true, newValue % Data.SectionLength);
-                    }
-                    else
-                    {
-                        data.DistanceLeft += distance;
-                    }
+                    MoveToNextSection(participant, data, true, newValue % Data.SectionLength);
                 }
                 else
                 {
-                    int newValue = data.DistanceRight + distance;
-                    if (newValue >= Data.SectionLength)
-                    {
-                        MoveToNextSection(participant, data, false, newValue % Data.SectionLength);
-                    }
-                    else
-                    {
-                        data.DistanceRight += distance;
-                    }
+                    data.DistanceLeft += distance;
+                }
+            }
+            else
+            {
+                var newValue = data.DistanceRight + distance;
+                if (newValue >= Data.SectionLength)
+                {
+                    MoveToNextSection(participant, data, false, newValue % Data.SectionLength);
+                }
+                else
+                {
+                    data.DistanceRight += distance;
                 }
             }
         }
 
         public void MoveToNextSection(IParticipant participant, SectionData data, bool left, int distance)
         {
-            SectionData nextData = GetNextData(data);
+            var nextData = GetNextData(data);
 
             if (nextData == null)
                 return;
 
-            bool canBeMoved = (nextData.Left == null || nextData.Right == null);
-            bool isDone = RoundTest(data, ((Driver)participant));
+            var canBeMoved = (nextData.Left == null || nextData.Right == null);
+            var isDone = RoundTest(data, ((Driver)participant));
 
             if (Participants.Count == 0)
                 return;
 
-            if (canBeMoved)
+            if (!canBeMoved) return;
+
+            var driver = (Driver)participant;
+            driver.DistanceTraveled++;;
+
+
+            if (left)
             {
-                Driver driver = (Driver)participant;
-                driver.DistanceTraveled++;;
+                data.DistanceLeft = 0;
+                data.Left = null;
+            }
+            else
+            {
+                data.DistanceRight = 0;
+                data.Right = null;
+            }
 
+            if (isDone) return;
 
-                if (left)
-                {
-                    data.DistanceLeft = 0;
-                    data.Left = null;
-                }
-                else
-                {
-                    data.DistanceRight = 0;
-                    data.Right = null;
-                }
+            
 
-                if (!isDone)
-                {
-                    Section section = GetSection(data);
-                    Data.Competition.SectionTimes.AddToList(new DriverTime() { Name = participant.Name, Section = section, Time = new TimeSpan() });
+            var section = GetSection(data);
 
-                    if (nextData.Left == null)
-                    {
-                        nextData.Left = participant;
-                        nextData.DistanceLeft = distance;
-                    }
-                    else if (nextData.Right == null)
-                    {
-                        nextData.Right = participant;
-                        nextData.DistanceRight = distance;
-                    }
-                }
+            if (section.SectionType == SectionTypes.Finish && !driver.Equipment.IsBroken)
+                driver.CurrentRound++;
+
+            Data.Competition.SectionTimes.AddToList(new DriverTime() { Name = participant.Name, Section = section, Time = new TimeSpan() });
+
+            if (nextData.Left == null)
+            {
+                nextData.Left = participant;
+                nextData.DistanceLeft = distance;
+            }
+            else if (nextData.Right == null)
+            {
+                nextData.Right = participant;
+                nextData.DistanceRight = distance;
             }
         }
 
         public bool RoundTest(SectionData data, Driver driver)
         {
-            Section section = GetSection(data);
-            if (section.SectionType == SectionTypes.Finish)
-                driver.CurrentRound++;
+            
+            if (driver.CurrentRound - 1 != Data.RoundsToWin) return false;
 
-            if (driver.CurrentRound - 1 == Data.RoundsToWin)
+            Finished.Add(driver);
+            Participants.Remove(driver);
+
+            if (Participants.Count == 0)
             {
-                Finished.Add(driver);
-                Participants.Remove(driver);
+                Stop();
+                Data.Competition.SetPoints(CalculateEndPoints());
 
-                if (Participants.Count == 0)
-                {
-                    Stop();
-                    Data.Competition.SetPoints(CalculateEndPoints());
-
-                    Data.NextRace();
-                    GameWon?.Invoke(this, new GameWonEventArgs() { Track = Track });
-                }
-                return true;
+                Data.NextRace();
+                GameWon?.Invoke(this, new GameWonEventArgs() { Track = Track });
             }
-            return false;
+            return true;
         }
 
         public int GetPointForPosition(int position)
@@ -288,15 +269,9 @@ namespace Controller
 
         public List<DriverPoints> CalculateEndPoints()
         {
-            List<DriverPoints> points = new List<DriverPoints>();
-
-            for(int i = 0; i < Finished.Count; i++)
-            {
-                IParticipant participant = Finished.ElementAt(i);
-                DriverPoints _points = new DriverPoints() { Name = participant.Name, Points = GetPointForPosition(i + 1) };
-                points.Add(_points);
-            }
-            return points;
+            return Finished.Select((t, i) => 
+                Finished.ElementAt(i)).Select((participant, i) => 
+                new DriverPoints() {Name = participant.Name, Points = GetPointForPosition(i + 1)}).ToList();
         }
 
         public SectionData GetNextData(SectionData prev)
@@ -307,25 +282,19 @@ namespace Controller
             if (index == Track.Sections.Count)
                 index = 0;
 
-            Section nextSection = Track.Sections.ElementAt(index);
+            var nextSection = Track.Sections.ElementAt(index);
             return _positions.GetValueOrDefault(nextSection);
         }
 
         public SectionData GetSectionDataForParticipant(IParticipant participant)
         {
-            return _positions.Values.Where(data => (data.Left != null && data.Left.Equals(participant)) || (data.Right != null && data.Right.Equals(participant))).FirstOrDefault<SectionData>();
+            return _positions.Values.FirstOrDefault(data => (data.Left != null && data.Left.Equals(participant)) || (data.Right != null && data.Right.Equals(participant)));
         }
 
         public int GetIndexOfSection(SectionData data)
         {
-            Section section = _positions.Where(x => x.Value == data).FirstOrDefault().Key;
+            Section section = _positions.FirstOrDefault(x => x.Value == data).Key;
             return Track.Sections.TakeWhile(x => x != section).Count();
-        }
-
-        public int CalculateSpeed(int performance, int quality)
-        {
-
-            return (int)performance * quality;
         }
 
         public void CalculateCoords()

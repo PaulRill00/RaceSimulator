@@ -4,7 +4,7 @@
     {
         public int Quality { get; set; }
         public int Performance { get; set; }
-        public int Speed { get; set; }
+        public int Speed => Performance * Quality;
         public bool IsBroken { get; set; }
     }
 }

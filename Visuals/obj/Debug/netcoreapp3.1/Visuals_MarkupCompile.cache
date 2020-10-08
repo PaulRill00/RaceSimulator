@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\App.xaml
-11151548125
+31985736604
 14-1589297704
-51196586377
+8530078890
 195-1455593396
-MainWindow.xaml;
+CompetitionStats.xaml;MainWindow.xaml;RaceStats.xaml;
 
 False
 

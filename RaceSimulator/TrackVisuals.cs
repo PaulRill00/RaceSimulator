@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Model;
 using Controller;
 
@@ -244,7 +243,6 @@ namespace RaceSimulator
         {
             string[] result = array;
             Array.Reverse(result);
-
             return result;
         }
         

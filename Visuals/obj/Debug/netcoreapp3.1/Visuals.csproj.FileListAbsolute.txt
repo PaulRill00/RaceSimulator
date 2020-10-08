@@ -37,3 +37,8 @@ D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\bin\Debug\netc
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\bin\Debug\netcoreapp3.1\images\fire\fire_3.png
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\bin\Debug\netcoreapp3.1\images\fire\fire_4.png
 D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\bin\Debug\netcoreapp3.1\images\fire\fire_5.png
+D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\obj\Debug\netcoreapp3.1\CompetitionStats.g.cs
+D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\obj\Debug\netcoreapp3.1\RaceStats.g.cs
+D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\obj\Debug\netcoreapp3.1\CompetitionStats.baml
+D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\obj\Debug\netcoreapp3.1\RaceStats.baml
+D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\obj\Debug\netcoreapp3.1\GeneratedInternalTypeHelper.g.cs

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Controller;
+﻿using Controller;
 using NUnit.Framework;
 
 namespace Tests
@@ -31,6 +28,18 @@ namespace Tests
             Race next = Data.CurrentRace;
 
             Assert.AreNotEqual(first, next);
+        }
+
+        [Test]
+        public void NextRace_NoNextTrack()
+        {
+            while(Data.Competition.Tracks.Count > 0)
+            {
+                Data.NextRace();
+            }
+            Data.NextRace();
+
+            Assert.IsNull(Data.CurrentRace);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Controller;
 using Model;
 using NUnit.Framework;
@@ -44,11 +43,12 @@ namespace Tests
         public void GetOffset_NegativeXAndY()
         {
             Data.CurrentRace.CalculateCoords();
+            Data.CurrentRace.ApplyOffset();
 
             int[] offset = TrackVisuals.Instance.GetOffset(Track.Sections);
 
-            Assert.Greater(offset[0], 0);
-            Assert.Greater(offset[1], 0);
+            Assert.GreaterOrEqual(offset[0], 0);
+            Assert.GreaterOrEqual(offset[1], 0);
         }
 
         [TestCase(SectionTypes.RightCorner, new int[] { 1, 0 }, ExpectedResult = new int[] { 0, 1 })]
