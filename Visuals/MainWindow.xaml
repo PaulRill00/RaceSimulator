@@ -8,19 +8,98 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="#FF17A873">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
         <Grid.DataContext>
             <local:DataContext/>
         </Grid.DataContext>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" >
+        <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <Menu DockPanel.Dock="Top" VerticalAlignment="Top" >
                 <MenuItem Header="Menu">
                     <MenuItem Header="Competition Stats" Click="OnCompetitionStatsOpen"/>
                     <MenuItem Header="Race Stats" Click="OnRaceStatsOpen"/>
+                    <MenuItem Header="{Binding ToggleMultiWindowHeader, Mode=OneWay}" Click="OnToggleWindows"/>
                     <MenuItem Header="Exit" Click="OnExit"/>
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <Image x:Name="TrackImage" Margin="0,20,0,0" />
-        <Label Content="{Binding TrackName, Mode=OneWay}" Margin="10,26,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="111" FontWeight="Bold"/>
+        <WrapPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+            <Label Content="{Binding TrackName, Mode=OneWay}" Margin="10,26,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="111" FontWeight="Bold" Panel.ZIndex="10"/>
+            <Image x:Name="TrackImage" Margin="0,10,0,0" />
+        </WrapPanel>
+        <WrapPanel Grid.Row="1" Grid.Column="1" Visibility="Collapsed" Width="200" x:Name="RaceStatsPanel" Background="DarkSlateGray">
+            <Label Content="Race stats" Width="160" Margin="20,0,0,0" Foreground="White"/>
+            <Label Content="Player Laps" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="160" Foreground="White"/>
+            <ListBox Margin="20,0,0,-10" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding PlayerRounds, Mode=OneWay, NotifyOnSourceUpdated=True}" Width="160">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CurrentRound}" Width="20"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Label Content="Player Distance Driven" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="160" Foreground="White"/>
+            <ListBox Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding PlayerDistanceDriven, Mode=OneWay}" Width="160">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" Text="{Binding DistanceTraveled}" Width="20"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Label Content="Player Speed" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="160" Foreground="White"/>
+            <ListBox Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ItemsSource="{Binding PlayerSpeed, Mode=OneWay}" Width="160">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Equipment.Speed}" Width="20"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </WrapPanel>
+        <WrapPanel Grid.Row="2" Grid.Column="1" Visibility="Collapsed" Width="200" x:Name="CompetitionStatsPanel" Background="DarkSlateGray">
+            <Label Content="Competition stats" Width="160" Margin="20,0,0,0" Foreground="White"/>
+            <ListBox Margin="20,10,0,0" ItemsSource="{Binding PlayerPoints, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Points}" Width="20"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </WrapPanel>
+
     </Grid>
 </Window>

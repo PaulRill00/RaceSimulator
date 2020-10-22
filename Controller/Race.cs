@@ -186,7 +186,7 @@ namespace Controller
                 return;
 
             var canBeMoved = (nextData.Left == null || nextData.Right == null);
-            var isDone = RoundTest(data, ((Driver)participant));
+            var isDone = RoundTest((Driver)participant);
 
             if (Participants.Count == 0)
                 return;
@@ -195,7 +195,6 @@ namespace Controller
 
             var driver = (Driver)participant;
             driver.DistanceTraveled++;;
-
 
             if (left)
             {
@@ -219,22 +218,46 @@ namespace Controller
 
             Data.Competition.SectionTimes.AddToList(new DriverTime() { Name = participant.Name, Section = section, Time = new TimeSpan() });
 
+            if (left)
+            {
+                if(!SetLeft(nextData, participant, distance))
+                    SetRight(nextData, participant, distance);
+            }
+            else
+            {
+                if(!SetRight(nextData, participant, distance))
+                    SetLeft(nextData, participant, distance);
+            }
+        }
+
+        public bool SetLeft(SectionData nextData, IParticipant participant, int distance)
+        {
             if (nextData.Left == null)
             {
                 nextData.Left = participant;
                 nextData.DistanceLeft = distance;
+                return true;
             }
-            else if (nextData.Right == null)
+
+            return false;
+        }
+
+        public bool SetRight(SectionData nextData, IParticipant participant, int distance)
+        {
+            if (nextData.Right == null)
             {
                 nextData.Right = participant;
                 nextData.DistanceRight = distance;
+                return true;
             }
+
+            return false;
         }
 
-        public bool RoundTest(SectionData data, Driver driver)
+        public bool RoundTest(Driver driver)
         {
             
-            if (driver.CurrentRound - 1 != Data.RoundsToWin) return false;
+            if (driver.CurrentRound < Data.RoundsToWin) return false;
 
             Finished.Add(driver);
             Participants.Remove(driver);
@@ -270,7 +293,7 @@ namespace Controller
         public List<DriverPoints> CalculateEndPoints()
         {
             return Finished.Select((t, i) => 
-                Finished.ElementAt(i)).Select((participant, i) => 
+                Finished[i]).Select((participant, i) => 
                 new DriverPoints() {Name = participant.Name, Points = GetPointForPosition(i + 1)}).ToList();
         }
 

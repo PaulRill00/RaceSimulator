@@ -5,6 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>Visuals</ActiveDebugProfile>
+    <_LastSelectedProfileId>D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Visuals\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Update="App.xaml">

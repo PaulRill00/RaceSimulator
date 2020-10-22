@@ -35,7 +35,7 @@
     &lt;TestId&gt;NUnit3x::C2619554-247D-44C6-8DC8-1746C9A63CA1::.NETCoreApp,Version=v3.1::Tests.Controller_Race_ParticipantStandings.CalculateEndPoints&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=662b12b1_002D9a6e_002D4406_002D9b39_002Dea18fbab5d1f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="NextRace_NoNextTrack" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=662b12b1_002D9a6e_002D4406_002D9b39_002Dea18fbab5d1f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NextRace_NoNextTrack" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\ControllerTest" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=69a33c86_002D94ae_002D4c75_002D82e5_002Dca4569789286/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DriverPoints_Add_AddToList" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
@@ -48,10 +48,8 @@
     &lt;TestId&gt;NUnit3x::C2619554-247D-44C6-8DC8-1746C9A63CA1::.NETCoreApp,Version=v3.1::Tests.Controller_Data_Initialization.NextRace_NoNextTrack&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a94f2e8f_002D9d0e_002D4b37_002D8b61_002D74d1b3b7cdb1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="StartStopTimer #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::C2619554-247D-44C6-8DC8-1746C9A63CA1::.NETCoreApp,Version=v3.1::Tests.Controller_Race_MoveParticipants.StartStopTimer&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a94f2e8f_002D9d0e_002D4b37_002D8b61_002D74d1b3b7cdb1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="StartStopTimer #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="D:\Users\paulr\Documents\Software\School\CS\RaceSimulator\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ca86a934_002D29d2_002D41fd_002D8fb8_002D77ddc1d89caa/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddDistanceToParticipant_MoveToNext #5" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;

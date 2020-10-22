@@ -6,10 +6,7 @@
         xmlns:local="clr-namespace:Visuals"
         mc:Ignorable="d"
         Title="CompetitionStats" Height="450" Width="800">
-    <Grid>
-        <Grid.DataContext>
-            <local:DataContext/>
-        </Grid.DataContext>
+    <Grid DataContext="{x:Static local:DataContext.Instance}">
         <Label Content="Competition Ranking" HorizontalAlignment="Left" Margin="68,37,0,0" VerticalAlignment="Top"/>
         <ListBox Margin="68,63,420,182" ItemsSource="{Binding PlayerPoints, Mode=OneWay}">
             <ListBox.ItemTemplate>
